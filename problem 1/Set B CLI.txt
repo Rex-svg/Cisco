@@ -1,0 +1,218 @@
+For R1-ISP
+
+enable
+configure terminal
+
+! ---------------- Housekeeping ----------------
+hostname R1-ISP
+enable secret csepstu
+banner motd "This is lab router R1-ISP. Authorized access only."
+no ip domain-lookup
+
+line console 0
+ password csepstu
+ login
+line vty 0 4
+ password csepstu
+ login
+
+! ---------------- LAN Interface ----------------
+interface FastEthernet0/0
+ description R1-ISP_LAN
+ ip address 172.169.254.62 255.255.255.192
+ no shutdown
+
+! ---------------- WAN to R2-Central ----------------
+interface Serial0/0/0
+ description Link_to_R2-Central
+ ip address 172.169.254.129 255.255.255.252
+ clock rate 64000
+ no shutdown
+
+! ---------------- WAN to R3-ISP ----------------
+interface Serial0/0/1
+ description Link_to_R3-ISP
+ ip address 172.169.254.133 255.255.255.252
+ clock rate 64000
+ no shutdown
+
+! ---------------- Static Routes ----------------
+! R2-Central LAN 1
+ip route 172.169.254.64 255.255.255.192 172.169.254.130
+
+! R2-Central LAN 2
+ip route 172.169.254.96 255.255.255.224 172.169.254.130
+
+! R3-ISP LAN
+ip route 172.169.254.32 255.255.255.224 172.169.254.134
+
+! R2-Central ↔ R3-ISP WAN
+ip route 172.169.254.136 255.255.255.252 172.169.254.130
+
+end
+copy running-config startup-config
+
+
+
+
+For R2-Central
+en
+conf term
+enable secret csepstu
+line console 0
+password csepstu
+login
+exit
+line vty 0 4
+password csepstu
+login
+exit
+banner motd *This is lab router R2-Central. Authorized access only.*
+
+
+interface fastEthernet 0/0
+ip address 172.169.254.110 255.255.255.240
+no shutdown
+exit
+
+interface fastEthernet 0/1
+ip address 172.169.254.94 255.255.255.224
+no shutdown
+exit
+
+interface serial 0/0/0
+ip address 172.169.254.130 255.255.255.252
+no shutdown
+clock rate 56000
+
+exit
+
+interface serial 0/0/1
+ip address 172.169.254.137 255.255.255.252
+no shutdown
+clock rate 56000
+
+
+
+
+for R3-ISP
+
+
+enable
+configure terminal
+
+! Housekeeping
+hostname R3-ISP
+enable secret csepstu
+banner motd "This is lab router R3-ISP. Authorized access only."
+
+! Console and VTY access
+line console 0
+ password csepstu
+ login
+exit
+
+line vty 0 4
+ password csepstu
+ login
+exit
+
+no ip domain-lookup
+
+! LAN Interface
+interface FastEthernet0/0
+ description R3-ISP_LAN
+ ip address 172.169.254.126 255.255.255.240
+ no shutdown
+exit
+
+! WAN Interface to R2-Central
+interface Serial0/0/0
+ description Link_to_R2-Central
+ ip address 172.169.254.138 255.255.255.252
+ clock rate 56000
+ no shutdown
+exit
+
+! WAN Interface to R1-ISP
+interface Serial0/0/1
+ description Link_to_R1-ISP
+ ip address 172.169.254.134 255.255.255.252
+ clock rate 56000
+ no shutdown
+exit
+
+! Default route (towards ISP / R1)
+ip route 0.0.0.0 0.0.0.0 10.29.101.165
+
+end
+copy running-config startup-config
+
+For SW1
+
+en
+conf term
+hostname SW1
+enable secret csepstu
+line console 0
+password csepstu
+login
+exit
+line vty 0 4
+password csepstu
+login
+exit
+banner motd *This is lab router switch.*
+
+
+For SW3
+
+en
+conf term
+hostname SW3
+enable secret csepstu
+line console 0
+password csepstu
+login
+exit
+line vty 0 4
+password csepstu
+login
+exit
+banner motd *This is lab router switch.*
+
+
+
+
+For SW2A
+
+en
+conf term
+hostname SW2A
+enable secret csepstu
+line console 0
+password csepstu
+login
+exit
+line vty 0 4
+password csepstu
+login
+exit
+banner motd *This is lab router switch.*
+
+For SW2B
+
+en
+conf term
+hostname SW2B
+enable secret csepstu
+line console 0
+password csepstu
+login
+exit
+line vty 0 4
+password csepstu
+login
+exit
+banner motd *This is lab router switch.*
+
